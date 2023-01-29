@@ -14,7 +14,7 @@ export const HomePage = () => {
         <IniciativeTracker/> 
         : 
         <HomePageContainer>
-            <Glitch text="Agostina" />
+            <Glitch text="Battle-tracker" />
             <button onClick={() => setStart(true)}>Comenzar</button>
         </HomePageContainer>
     )

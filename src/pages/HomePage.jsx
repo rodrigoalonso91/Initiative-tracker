@@ -2,7 +2,6 @@ import { useState } from 'react'
 import styled from 'styled-components';
 import { Glitch } from '../components/Glitch'
 import { IniciativeTracker } from '../IniciativeTracker';
-import '../style/HomePage.css'
 
 export const HomePage = () => {
 

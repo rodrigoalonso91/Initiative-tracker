@@ -1,6 +1,6 @@
 import { Tooltip } from "@nextui-org/react";
 
-export const ArmorClassIcon = ({ color1 = '#fff', color2, tooltip = 'AC' }) => {
+export const ArmorClassIcon = ({ color1 = '#6f6f6f', color2, tooltip = 'AC' }) => {
 
     if (!color2) color2 = color1;
 

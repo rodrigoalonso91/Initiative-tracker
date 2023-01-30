@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components';
 import { Glitch } from '../components/Glitch'
-import { IniciativeTracker } from '../IniciativeTracker';
+import { BattleTracker } from '../BattleTracker';
 
 export const HomePage = () => {
 
@@ -10,7 +10,7 @@ export const HomePage = () => {
     return (
         start 
         ? 
-        <IniciativeTracker/> 
+        <BattleTracker/> 
         : 
         <HomePageContainer>
             <Glitch text="Battle-tracker" />

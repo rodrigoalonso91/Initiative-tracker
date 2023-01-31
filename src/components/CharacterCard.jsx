@@ -1,13 +1,27 @@
 import styled from "styled-components"
-import { Text, Button  } from "@nextui-org/react";
+import { Text, Button } from "@nextui-org/react";
 import { ArmorClassIcon } from "./icons/ArmorClassIcon";
 import { InitiativeIcon } from "./icons/InitiativeIcon";
+import { useState } from "react";
 
-export const CharacterCard = ({ initiative, ac, name, isHero, actions }) => {
+export const CharacterCard = ({ initiative, ac, name, isHero, characterState }) => {
+
+    const [spell, setSpell] = useState([]);
 
     const handleKill = () => {
-        const updatedCharacters = actions.characters.filter( c  => c.name !== name );
-        actions.setCharacters(updatedCharacters);
+        const updatedCharacters = characterState.characters.filter(c => c.name !== name);
+        characterState.setCharacters(updatedCharacters);
+    };
+
+    const handleSpell = () => {
+
+        const newSpell = {
+            name: 'fireball',
+            duration: null,
+            damage: '10d6'
+        };
+
+        setSpell([...spell, newSpell]);
     };
 
     return (
@@ -17,7 +31,7 @@ export const CharacterCard = ({ initiative, ac, name, isHero, actions }) => {
                 <Text
                     size={19}
                     weight="bold"
-                    css={{ textGradient: `${isHero ? '45deg, $yellow600 -20%, $red600 100%' : "45deg, $blue600 -20%, $red600 100%"}`, flexGrow: .7}}
+                    css={{ textGradient: `${isHero ? '45deg, $yellow600 -20%, $red600 100%' : "45deg, $blue600 -20%, $red600 100%"}`, flexGrow: .7 }}
                 >
                     {name}
                 </Text>
@@ -32,12 +46,18 @@ export const CharacterCard = ({ initiative, ac, name, isHero, actions }) => {
             </CardSection>
 
             <CardSection>
-                <Text size={15} css={{ color: '#fff' }}>Status section.</Text>
+                {
+                    spell.map(s =>
+                        <Text size={15} css={{ color: '#fff' }}>
+                           { s.name }
+                        </Text>
+                    )
+                }
             </CardSection>
 
             <CardSection>
                 <Button.Group size="xs" color="warning" flat>
-                    <Button>Spell</Button>
+                    <Button onPress={handleSpell}>Spell</Button>
                     <Button>Buff</Button>
                     <Button>Debuff</Button>
                     <Button onPress={handleKill}>Kill</Button>

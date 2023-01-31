@@ -38,11 +38,11 @@ export const CharacterCard = ({ initiative, ac, name, isHero, characterState, in
                     {name}
                 </Text>
                 <Stat>
-                    <InitiativeIcon color="#2510e8" />
+                    <InitiativeIcon color="#63d2ee" />
                     <Text size={15} css={{ color: '#fff' }}>{initiative}</Text>
                 </Stat>
                 <Stat>
-                    <ArmorClassIcon color1="#2510e8" />
+                    <ArmorClassIcon color1="#7664ff" />
                     <Text size={15} css={{ color: '#fff' }}>{ac ? ac : '??'}</Text>
                 </Stat>
             </CardSection>

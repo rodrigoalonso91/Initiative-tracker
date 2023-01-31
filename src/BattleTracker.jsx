@@ -1,18 +1,46 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { Button, Grid, Switch, Text } from "@nextui-org/react";
 import { useField } from "./hooks/useField";
 import { CharacterCard } from "./components/CharacterCard";
+import { useCounter } from "./hooks/useCounter";
 
 
 export const BattleTracker = () => {
 
-    const [characters, setCharacters] = useState([]);
+    const [turn, setTurn] = useState(0);
     const [isHero, setIsHero] = useState(true);
+    const [characters, setCharacters] = useState([]);
+    const { counter, increment, decrement, reset } = useCounter(0)
+
+    const currentPlayer = useMemo(() => {
+
+        return characters.length > 0 && counter < characters.length
+            ? characters[counter].name
+            : '-';
+
+    }, [counter]);
+
+    const characterInputRef = useRef(null);
 
     const characterInput = useField({ type: 'text' });
     const initiativeInput = useField({ type: 'number' });
     const acInput = useField({ type: 'number' });
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => { document.removeEventListener('keydown', handleKeyDown); }
+
+    }, [counter]);
+
+    useEffect(() => {
+
+        if (counter === characters.length) {
+            setTurn(turn + 1);
+            reset();
+        }
+
+    }, [counter]);
 
     const addCharacterCard = () => {
 
@@ -26,6 +54,8 @@ export const BattleTracker = () => {
         characterInput.clean();
         initiativeInput.clean();
         acInput.clean();
+
+        characterInputRef.current.focus();
     };
 
     const handleClick = () => {
@@ -42,22 +72,23 @@ export const BattleTracker = () => {
         setIsHero(checked);
     };
 
-    const removeCharacter = (name) => {
-        console.log('Remove character');
+    const handleKeyDown = ({ keyCode }) => {
+        if (keyCode === 39) increment();
+        if (keyCode === 37) decrement();
     };
 
     return (
         <>
             <FormSection>
                 <CharacterForm onKeyDown={handleEnter} >
-                    <header 
-                        style={{display: 'flex', justifyContent: "space-evenly"}}
+                    <header
+                        style={{ display: 'flex', justifyContent: "space-evenly" }}
                     >
                         <Text color="#fff"> Team member </Text>
-                        <Switch initialChecked size="sm" color="secondary" onChange={handleSwitch}/>
+                        <Switch initialChecked size="sm" color="secondary" onChange={handleSwitch} />
                     </header>
 
-                    <Input {...characterInput} placeholder="Character" />
+                    <Input {...characterInput} placeholder="Character" ref={characterInputRef} />
                     <Input {...initiativeInput} placeholder="Initiative" />
                     <Input {...acInput} placeholder="AC" />
 
@@ -65,21 +96,45 @@ export const BattleTracker = () => {
                 </CharacterForm>
             </FormSection>
 
-            <Grid.Container gap={1} direction="column" >
+            <PlayerSection>
+                <Grid.Container gap={1} direction="column">
                     {
                         characters.sort((a, b) => b.initiative - a.initiative)
-                        .map((character, index) => (
-                            <Grid key={index} xs={12} direction="column">
-                                <CharacterCard {...character} actions={{setCharacters, characters}} />
-                            </Grid>
-                        ))
+                            .map((character, index) => (
+                                <Grid key={index} xs={12} direction="column">
+                                    <CharacterCard
+                                        {...character}
+                                        index={index}
+                                        counter={counter}
+                                        characterState={{ setCharacters, characters }}
+                                    />
+                                </Grid>
+                            ))
                     }
-            </Grid.Container>
+                </Grid.Container>
+            </PlayerSection>
+
+            <TurnSection>
+                <Text h3 color="success">Turn</Text>
+                <Text h5 color="white">{turn}</Text>
+                <Text h3 color="success">Player</Text>
+                <Text h5 color="white">{currentPlayer}</Text>
+            </TurnSection>
         </>
     )
 }
 
-const CharacterForm = styled.form`
+const FormSection = styled.section`
+    position: absolute;
+    top: 25px;
+    left: 25px;
+`;
+
+const TurnSection = styled.section`
+    position: absolute;
+    top: 25px;
+    right: 25px;
+
     background: #111;
 	background: linear-gradient(#1b1b1b, #111);
 	border: 1px solid #000;
@@ -87,8 +142,49 @@ const CharacterForm = styled.form`
 	box-shadow: inset 0 0 0 1px #272727;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 7px;
     padding: 20px;
+`;
+
+const PlayerSection = styled.section`
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 100vh;
+    /* width: 500px; */
+
+    &::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #d6dee1;
+        border-radius: 20px;
+        border: 6px solid transparent;
+        background-clip: content-box;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #a8bbbf;
+    }
+`;
+
+const CharacterForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    padding: 20px;
+    
+    background: #111;
+	background: linear-gradient(#1b1b1b, #111);
+	border: 1px solid #000;
+	border-radius: 5px;
+	box-shadow: inset 0 0 0 1px #272727;
 `;
 
 const glow = keyframes`
@@ -146,10 +242,4 @@ const Input = styled.input`
     &:focus:-moz-placeholder {
         color: #efe;
     }
-`;
-
-const FormSection = styled.section`
-    position: absolute;
-    top: 25px;
-    left: 25px;
 `;

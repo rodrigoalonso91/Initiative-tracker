@@ -4,34 +4,36 @@ import { ArmorClassIcon } from "./icons/ArmorClassIcon";
 import { InitiativeIcon } from "./icons/InitiativeIcon";
 import { useState } from "react";
 
-export const CharacterCard = ({ initiative, ac, name, isHero, characterState }) => {
+export const CharacterCard = ({ initiative, ac, name, isHero, characterState, index, counter }) => {
 
-    const [spell, setSpell] = useState([]);
+    const [ spell, setSpell ] = useState([]);
+    const [ animation, setAnimation ] = useState('animate__animated animate__fadeInUp');
 
     const handleKill = () => {
         const updatedCharacters = characterState.characters.filter(c => c.name !== name);
         characterState.setCharacters(updatedCharacters);
     };
 
-    const handleSpell = () => {
+    // const handleSpell = () => {
 
-        const newSpell = {
-            name: 'fireball',
-            duration: null,
-            damage: '10d6'
-        };
+    //     const newSpell = {
+    //         name: 'fireball',
+    //         duration: null,
+    //         damage: '10d6'
+    //     };
 
-        setSpell([...spell, newSpell]);
-    };
+    //     setSpell([...spell, newSpell]);
+    // };
 
     return (
-        <Card>
+        <Card style={{ border: `${index === counter ? "1px solid #fdadfe" : "none"}` }} className={animation}>
 
             <CardSection>
                 <Text
                     size={19}
                     weight="bold"
                     css={{ textGradient: `${isHero ? '45deg, $yellow600 -20%, $red600 100%' : "45deg, $blue600 -20%, $red600 100%"}`, flexGrow: .7 }}
+                    onDoubleClick={handleKill}
                 >
                     {name}
                 </Text>
@@ -45,7 +47,7 @@ export const CharacterCard = ({ initiative, ac, name, isHero, characterState }) 
                 </Stat>
             </CardSection>
 
-            <CardSection>
+            {/* <CardSection>
                 {
                     spell.map(s =>
                         <Text size={15} css={{ color: '#fff' }}>
@@ -53,16 +55,16 @@ export const CharacterCard = ({ initiative, ac, name, isHero, characterState }) 
                         </Text>
                     )
                 }
-            </CardSection>
+            </CardSection> */}
 
-            <CardSection>
+            {/* <CardSection>
                 <Button.Group size="xs" color="warning" flat>
                     <Button onPress={handleSpell}>Spell</Button>
                     <Button>Buff</Button>
                     <Button>Debuff</Button>
                     <Button onPress={handleKill}>Kill</Button>
                 </Button.Group>
-            </CardSection>
+            </CardSection> */}
 
         </Card>
     )
@@ -76,8 +78,8 @@ const Card = styled.div`
     display: flex;
     flex-direction: column;
     padding: 13px;
-    height: 100px;
-    width: 450px;
+    max-height: 100px;
+    width: 550px;
     justify-content: space-between;
 `;
 

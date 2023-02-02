@@ -4,6 +4,7 @@ import { ArmorClassIcon } from "./icons/ArmorClassIcon";
 import { InitiativeIcon } from "./icons/InitiativeIcon";
 import { useState } from "react";
 
+
 export const CharacterCard = ({ initiative, ac, name, isHero, characterState, index, counter }) => {
 
     const [ spell, setSpell ] = useState([]);
@@ -26,7 +27,7 @@ export const CharacterCard = ({ initiative, ac, name, isHero, characterState, in
     // };
 
     return (
-        <Card style={{ border: `${index === counter ? "1px solid #fdadfe" : "none"}` }} className={animation}>
+        <Card activePlayer={index === counter} className={animation}>
 
             <CardSection>
                 <Text
@@ -73,7 +74,7 @@ export const CharacterCard = ({ initiative, ac, name, isHero, characterState, in
 const Card = styled.div`
     background: #111;
 	background: linear-gradient(#1b1b1b, #111);
-	border: 1px solid #000000;
+	border: ${ ({ activePlayer }) => activePlayer ? "1px solid #fdadfe" : "none" };
 	border-radius: 5px;
     display: flex;
     flex-direction: column;

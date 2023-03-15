@@ -4,6 +4,7 @@ import { Button, Grid, Switch, Text } from "@nextui-org/react";
 import { useField } from "./hooks/useField";
 import { CharacterCard } from "./components/CharacterCard";
 import { useCounter } from "./hooks/useCounter";
+import TurnInfo from "./components/TurnInfo";
 
 
 export const BattleTracker = () => {
@@ -48,7 +49,7 @@ export const BattleTracker = () => {
         const initiative = initiativeInput.value;
         const ac = acInput.value;
 
-        if (name === '' && initiative === '' && ac === '') return;
+        if ((!name || !initiative) || (!initiative && !ac) ) return;
 
         setCharacters([...characters, { name, initiative, ac, isHero }]);
         characterInput.clean();
@@ -81,12 +82,10 @@ export const BattleTracker = () => {
         <>
             <FormSection>
                 <CharacterForm onKeyDown={handleEnter} >
-                    <header
-                        style={{ display: 'flex', justifyContent: "space-evenly" }}
-                    >
+                    <TeamMemberSwitch>
                         <Text color="#fff"> Team member </Text>
                         <Switch initialChecked size="sm" color="secondary" onChange={handleSwitch} />
-                    </header>
+                    </TeamMemberSwitch>
 
                     <Input {...characterInput} placeholder="Character" ref={characterInputRef} />
                     <Input {...initiativeInput} placeholder="Initiative" />
@@ -107,6 +106,7 @@ export const BattleTracker = () => {
                                         index={index}
                                         counter={counter}
                                         characterState={{ setCharacters, characters }}
+                                        turn={turn}
                                     />
                                 </Grid>
                             ))
@@ -114,37 +114,24 @@ export const BattleTracker = () => {
                 </Grid.Container>
             </PlayerSection>
 
-            <TurnSection>
-                <Text h3 color="success">Turn</Text>
-                <Text h5 color="white">{turn}</Text>
-                <Text h3 color="success">Player</Text>
-                <Text h5 color="white">{currentPlayer}</Text>
-            </TurnSection>
+            <TurnInfo
+                turn={turn}
+                currentPlayer={currentPlayer} 
+            />
         </>
     )
 }
+
+const TeamMemberSwitch = styled.header`
+    display: flex;
+    justify-content: space-evenly;
+    padding-bottom: 2px;
+`
 
 const FormSection = styled.section`
     position: absolute;
     top: 25px;
     left: 25px;
-`;
-
-const TurnSection = styled.section`
-    position: absolute;
-    top: 25px;
-    right: 25px;
-
-    background: #111;
-	background: linear-gradient(#1b1b1b, #111);
-	border: 1px solid #000;
-	border-radius: 5px;
-	box-shadow: inset 0 0 0 1px #272727;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
-    padding: 20px;
 `;
 
 const PlayerSection = styled.section`
@@ -176,7 +163,7 @@ const PlayerSection = styled.section`
 const CharacterForm = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 10px;
 
     padding: 20px;
     

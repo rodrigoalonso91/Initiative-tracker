@@ -3,31 +3,32 @@ import { Text, Button } from "@nextui-org/react";
 import { ArmorClassIcon } from "./icons/ArmorClassIcon";
 import { InitiativeIcon } from "./icons/InitiativeIcon";
 import { useState } from "react";
+import Spell from "./Spell";
 
 
-export const CharacterCard = ({ initiative, ac, name, isHero, characterState, index, counter }) => {
+export const CharacterCard = ({ initiative, ac, name, isHero, characterState, index, counter, turn }) => {
 
-    const [ spell, setSpell ] = useState([]);
+    const [ spells, setSpells ] = useState([]);
     const [ animation, setAnimation ] = useState('animate__animated animate__fadeInUp');
-
+    
     const handleKill = () => {
         const updatedCharacters = characterState.characters.filter(c => c.name !== name);
         characterState.setCharacters(updatedCharacters);
     };
 
-    // const handleSpell = () => {
+    const handleSpell = () => {
 
-    //     const newSpell = {
-    //         name: 'fireball',
-    //         duration: null,
-    //         damage: '10d6'
-    //     };
+        const newSpell = {
+            name: 'Wall of fire',
+            duration: 7,
+            damage: '10d6'
+        };
 
-    //     setSpell([...spell, newSpell]);
-    // };
+        setSpells([...spells, newSpell]);
+    };
 
     return (
-        <Card activePlayer={index === counter} className={animation}>
+        <Card activePlayer={index === counter} className={animation} >
 
             <CardSection>
                 <Text
@@ -48,24 +49,23 @@ export const CharacterCard = ({ initiative, ac, name, isHero, characterState, in
                 </Stat>
             </CardSection>
 
-            {/* <CardSection>
+            <CardSection>
                 {
-                    spell.map(s =>
-                        <Text size={15} css={{ color: '#fff' }}>
-                           { s.name }
-                        </Text>
+                    spells &&
+                    spells.map((spell, index) =>
+                        <Spell key={`${spell.name}-${index}`} {...spell} turn={turn} />
                     )
                 }
-            </CardSection> */}
+            </CardSection>
 
-            {/* <CardSection>
+            <CardSection>
                 <Button.Group size="xs" color="warning" flat>
                     <Button onPress={handleSpell}>Spell</Button>
                     <Button>Buff</Button>
                     <Button>Debuff</Button>
                     <Button onPress={handleKill}>Kill</Button>
                 </Button.Group>
-            </CardSection> */}
+            </CardSection>
 
         </Card>
     )
